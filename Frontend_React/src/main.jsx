@@ -12,6 +12,8 @@ import LinkHome from "./routes/LinkHome.jsx";
 import LinkMainContent from "./routes/LinksMainContent.jsx";
 import Pricing from "./routes/Pricing.jsx";
 import Analytics from "./routes/Analytics.jsx";
+import Login from "./routes/login&signup_pages/login.jsx"; // Adjust the path if needed
+import Signup from "./routes/login&signup_pages/signup.jsx"; // Adjust the path if needed
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
   {
     path: "/logout",
     element: <div>logout page</div>,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup", 
+    element: <Signup />,
   },
   {
     path: "/home",
