@@ -14,6 +14,7 @@ import Pricing from "./routes/Pricing.jsx";
 import Analytics from "./routes/Analytics.jsx";
 import Login from "./routes/login&signup_pages/login.jsx"; // Adjust the path if needed
 import Signup from "./routes/login&signup_pages/signup.jsx"; // Adjust the path if needed
+import Qr_Code_Generator_Store_Provider from "./store/Qr_Code_Generator_Store.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,11 +30,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <Qr_Code_Generator_Store_Provider>
+        <Login />,
+      </Qr_Code_Generator_Store_Provider>
+    ),
   },
   {
-    path: "/signup", 
-    element: <Signup />,
+    path: "/signup",
+    element: (
+      <Qr_Code_Generator_Store_Provider>
+        <Signup />,
+      </Qr_Code_Generator_Store_Provider>
+    ),
   },
   {
     path: "/home",

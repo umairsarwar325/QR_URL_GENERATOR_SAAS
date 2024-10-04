@@ -7,8 +7,9 @@ const registerController = async function (req, res, next) {
 
     // Check if user already exists
     const existingUser = await User.findOne({ Email });
+    console.log(existingUser);
     if (existingUser) {
-      return res.status(400).json({
+      return res.json({
         authSuccess: false,
         message: "Email already registered",
       });
@@ -26,19 +27,18 @@ const registerController = async function (req, res, next) {
     });
 
     if (newUser) {
-      res.status(201).json({
+      return res.status(201).json({
         authSuccess: true,
-        message: "User registered successfully",
+        message: "User registered successfully. Login to continue",
       });
     } else {
-      res.status(201).json({
+      return res.status(201).json({
         authSuccess: false,
         message: "Can not register, try again",
       });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       authSuccess: false,
       message: "Internal server error",
     });

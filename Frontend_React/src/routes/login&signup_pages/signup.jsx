@@ -1,37 +1,54 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import signupImage from "../../assets/images/register.png";
 import ErrorModal from "./ErrorModal";
+import axios from "axios";
+import { QrCodeContext } from "../../store/Qr_Code_Generator_Store";
 
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { showErrorModal, setShowErrorModal } = useContext(QrCodeContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-
-    // Simulated logic to check if the user is already registered
-    const existingUser = fakeApiCheckForExistingUser("test@example.com"); 
-    if (existingUser) {
-      setIsModalOpen(true); 
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "http://localhost:3000/api/register",
+        data
+      );
+      if (response.data) {
+        setShowErrorModal({
+          status: true,
+          type: response.data.authSuccess ? "success" : "error",
+          message: response.data.message,
+        });
+        if (response.data.authSuccess) {
+          navigate("/login");
+        }
+        setLoading(false);
+      } else {
+        setShowErrorModal({
+          status: true,
+          type: "error",
+          message: "Error registering user. Plaese try again",
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      setShowErrorModal({
+        status: true,
+        type: "error",
+        message: "Error registering user. Plaese try again",
+      });
+      setLoading(false);
     }
-  }, []); 
-
-  const onSubmit = (data) => {
-    // Add your signup logic here with 'data.name', 'data.email', and 'data.password'
-    console.log(data);
-  };
-
-  // Simulated API check for existing user
-  const fakeApiCheckForExistingUser = (email) => {
-    // Simulate a registered email
-    const registeredEmails = ["test@example.com", "user@example.com"];
-    return registeredEmails.includes(email);
   };
 
   return (
@@ -41,7 +58,7 @@ const SignUp = () => {
           <img
             src={signupImage}
             alt="Signup Illustration"
-            className="w-69 h-69 rounded-lg" 
+            className="w-69 h-69 rounded-lg"
           />
         </div>
 
@@ -53,26 +70,26 @@ const SignUp = () => {
             <div className="mb-4">
               <input
                 type="text"
-                placeholder="Name"
-                {...register("name", {
-                  required: { value: true, message: "Name is required" },
+                placeholder="User name"
+                {...register("Username", {
+                  required: { value: true, message: "User Name is required" },
                 })}
                 className={`w-full h-12 p-4 rounded border ${
-                  errors.name
+                  errors.Username
                     ? "border-red-500 bg-red-100 placeholder-red-500 focus:ring-red-500 focus:border-red-500"
                     : "border-gray-300 focus:ring-[#FF6F00] focus:border-[#FF6F00]"
                 }`}
                 style={{ backgroundColor: "#F9F9F9" }}
               />
-              {errors.name && (
-                <p className="text-red-500">{errors.name.message}</p>
+              {errors.Username && (
+                <p className="text-red-500">{errors.Username.message}</p>
               )}
             </div>
             <div className="mb-4">
               <input
                 type="email"
                 placeholder="Email"
-                {...register("email", {
+                {...register("Email", {
                   required: { value: true, message: "Email is required" },
                   pattern: {
                     value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
@@ -80,21 +97,21 @@ const SignUp = () => {
                   },
                 })}
                 className={`w-full h-12 p-4 rounded border ${
-                  errors.email
+                  errors.Email
                     ? "border-red-500 bg-red-100 placeholder-red-500 focus:ring-red-500 focus:border-red-500"
                     : "border-gray-300 focus:ring-[#FF6F00] focus:border-[#FF6F00]"
                 }`}
                 style={{ backgroundColor: "#F9F9F9" }}
               />
-              {errors.email && (
-                <p className="text-red-500">{errors.email.message}</p>
+              {errors.Email && (
+                <p className="text-red-500">{errors.Email.message}</p>
               )}
             </div>
             <div className="mb-4">
               <input
                 type="password"
                 placeholder="Password"
-                {...register("password", {
+                {...register("Password", {
                   required: { value: true, message: "Password is required" },
                   minLength: {
                     value: 6,
@@ -102,23 +119,22 @@ const SignUp = () => {
                   },
                 })}
                 className={`w-full h-12 p-4 rounded border ${
-                  errors.password
+                  errors.Password
                     ? "border-red-500 bg-red-100 placeholder-red-500 focus:ring-red-500 focus:border-red-500"
                     : "border-gray-300 focus:ring-[#FF6F00] focus:border-[#FF6F00]"
                 }`}
                 style={{ backgroundColor: "#F9F9F9" }}
               />
-              {errors.password && (
-                <p className="text-red-500">{errors.password.message}</p>
+              {errors.Password && (
+                <p className="text-red-500">{errors.Password.message}</p>
               )}
             </div>
             <button
               type="submit"
               className="w-full bg-[#FF6F00] text-white py-3 rounded-md hover:bg-orange-700 transition duration-300"
             >
-              Sign Up
+              {loading ? "Signing up..." : "Sign Up"}
             </button>
-
           </form>
 
           <div className="mt-4 text-center">
@@ -133,17 +149,9 @@ const SignUp = () => {
       </div>
 
       {/* Error Modal */}
-      {isModalOpen && (
-        <ErrorModal
-          message="This email is already registered. Please try a different one."
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
+      {showErrorModal.status && <ErrorModal />}
     </div>
-
   );
 };
 
 export default SignUp;
-
-

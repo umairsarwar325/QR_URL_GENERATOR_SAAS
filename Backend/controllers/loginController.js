@@ -6,11 +6,10 @@ const keys = require("../config/keys");
 const loginController = async function (req, res, next) {
   try {
     const { Email, Password } = req.body;
-
     // Find the user by email
     const user = await User.findOne({ Email });
     if (!user) {
-      return res.status(400).json({
+      return res.json({
         authSuccess: false,
         message: "Invalid email or password",
       });
@@ -19,7 +18,7 @@ const loginController = async function (req, res, next) {
     // Check if the password is correct
     const isMatch = await bcrypt.compare(Password, user.PasswordHash);
     if (!isMatch) {
-      return res.status(400).json({
+      return res.json({
         authSuccess: false,
         message: "Invalid email or password",
       });
@@ -36,9 +35,9 @@ const loginController = async function (req, res, next) {
     const token = jwt.sign(payload, keys.JWT_KEY);
 
     // Set the token as a cookie
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("token", token);
 
-    res.status(200).json({
+    res.json({
       authSuccess: true,
       message: "Login successful",
     });

@@ -22,6 +22,15 @@ export const QrCodeContext = createContext({
   showCustomization: false,
   handleDownloadClick: () => {},
   longUrlS: null,
+  showErrorModal: {
+    status: false,
+    type: "error",
+    message: "",
+  },
+  setShowErrorModal: () => {}, // Add this line
+  setFormData: () => {}, // Add this line
+  setShowCustomization: () => {}, // Add this line
+  setLongUrlS: () => {}, // Add this line
 });
 
 const Qr_Code_Generator_Store_Provider = ({ children }) => {
@@ -47,6 +56,11 @@ const Qr_Code_Generator_Store_Provider = ({ children }) => {
   };
   const [showCustomization, setShowCustomization] = useState(false);
   const [longUrlS, setLongUrlS] = useState(null);
+  const [showErrorModal, setShowErrorModal] = useState({
+    status: false,
+    type: "error",
+    message: "",
+  });
 
   // Handle QR code download
   const handleDownloadClick = () => {
@@ -68,6 +82,8 @@ const Qr_Code_Generator_Store_Provider = ({ children }) => {
         handleDownloadClick,
         longUrlS,
         setLongUrlS,
+        showErrorModal,
+        setShowErrorModal,
       }}
     >
       {children}
