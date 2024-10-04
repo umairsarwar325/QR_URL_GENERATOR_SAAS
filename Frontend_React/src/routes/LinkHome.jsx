@@ -84,7 +84,7 @@ const LinkHome = () => {
               Cancel
             </button>
             <button
-              className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 flex items-center"
+              className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 flex items-center mt-2"
               type="submit"
             >
               {loading ? "Creating..." : "Create your short link"}

@@ -15,6 +15,10 @@ import Analytics from "./routes/Analytics.jsx";
 import Login from "./routes/login&signup_pages/login.jsx"; // Adjust the path if needed
 import Signup from "./routes/login&signup_pages/signup.jsx"; // Adjust the path if needed
 import Qr_Code_Generator_Store_Provider from "./store/Qr_Code_Generator_Store.jsx";
+import Logout from "./routes/login&signup_pages/Logout.jsx";
+import HelpAndSupport from "./routes/HelpAndSupport.jsx";
+import SettingsPage from "./routes/SettingsPage.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,10 +28,10 @@ const router = createBrowserRouter([
     path: "/pricing",
     element: <Pricing />,
   },
-  {
-    path: "/logout",
-    element: <div>logout page</div>,
-  },
+  // {
+  //   path: "/logout",
+  //   element: <div>logout page</div>,
+  // },
   {
     path: "/login",
     element: (
@@ -69,12 +73,16 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: <div>settings page</div>,
+        element: <SettingsPage/>,
       },
       {
         path: "help",
-        element: <div>help page</div>,
+        element: <HelpAndSupport/>,
       },
+        {
+      path: "logout",
+      element: <Logout />,
+    },
     ],
   },
 ]);

@@ -81,7 +81,7 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to="/logout"
+            to="/home/logout"
             className={({ isActive }) =>
               isActive
                 ? "text-orange-500 block p-2"
