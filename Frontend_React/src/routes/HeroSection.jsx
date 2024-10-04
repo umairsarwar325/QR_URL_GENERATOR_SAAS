@@ -35,13 +35,13 @@ const HeroSection = () => {
           </nav>
           <div className="space-x-4 hidden md:flex">
             <Link
-              to="/home/qr"
+              to="/login"
               className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 no-underline"
             >
               Login
             </Link>
             <Link
-              to="#"
+              to="/signup"
               className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 no-underline"
             >
               Sign Up
