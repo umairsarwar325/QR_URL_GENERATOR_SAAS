@@ -1,5 +1,9 @@
 const express = require("express");
 const axios = require("axios");
+const User = require("../models/usersModel");
+const Plan = require("../models/planModel");
+const Usage = require("../models/usageModel");
+const QRCode = require("../models/qrCodeModel");
 
 const qrController = async function (req, res, next) {
   try {
@@ -21,7 +25,21 @@ const qrController = async function (req, res, next) {
     } = req.body;
 
     if (!text) {
-      return res.status(400).json({ error: "Text is required" });
+      return res.json({
+        qrSuccess: false,
+        message: "Text is required",
+      });
+    }
+    const user = await User.findOne({ Email: "test1@test.com" });
+    const usage = await Usage.findOne({ UserID: user._id });
+    const plan = await Plan.findOne({ _id: user.PlanID });
+
+    if (usage.QRCodeCount >= plan.QRCodeLimit) {
+      return res.json({
+        qrSuccess: false,
+        message:
+          "Qr Code limit exceeded. Please upgrade your subscription plan",
+      });
     }
 
     let contentType;
@@ -62,10 +80,35 @@ const qrController = async function (req, res, next) {
         "base64"
       );
       const imageSrc = `data:${contentType};base64,${imageBase64}`;
-      res.json({ imageSrc });
+
+      if (user && usage && plan) {
+        const newQr = await QRCode.create({
+          UserID: user._id,
+          URL: imageSrc,
+        });
+        if (newQr) {
+          user.QRCodes.push(newQr._id);
+          usage.QRCodeCount += 1;
+          await user.save();
+          await usage.save();
+          return res.json({
+            qrSuccess: true,
+            imageSrc: newQr.URL,
+            message: "QR code generated successfully",
+          });
+        }
+      } else {
+        return res.json({
+          qrSuccess: false,
+          message: "Failed to generate QR code",
+        });
+      }
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to generate QR code" });
+    res.status(500).json({
+      qrSuccess: false,
+      message: "Internel server error",
+    });
   }
 };
 

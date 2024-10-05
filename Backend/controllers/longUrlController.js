@@ -1,14 +1,14 @@
-const { urlDatabase } = require("../routes/createShlink");
+const URL = require("../models/urlModel");
 
-const longUrlController = (req, res) => {
+const longUrlController = async (req, res) => {
   const { shortId } = req.params;
-  const longUrl = urlDatabase[shortId];
 
-  if (longUrl) {
-    res.redirect(longUrl );
+  const urlFromDb = await URL.findOne({ shortUrl: shortId });
+  if (urlFromDb) {
+    res.send(urlFromDb.OriginalUrl);
   } else {
-    res.status(404).json({ error: "URL not found" });
+    res.json({ error: "URL not found" });
   }
-}
+};
 
-module.exports = longUrlController
+module.exports = longUrlController;

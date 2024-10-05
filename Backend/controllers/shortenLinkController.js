@@ -1,6 +1,8 @@
 const { customAlphabet } = require("nanoid");
-const { urlDatabase } = require("../routes/createShlink");
-
+const User = require("../models/usersModel");
+const Plan = require("../models/planModel");
+const Usage = require("../models/usageModel");
+const URL = require("../models/urlModel");
 
 // Function to generate a short URL
 const nanoid = customAlphabet(
@@ -12,18 +14,56 @@ const nanoid = customAlphabet(
 const publicDomain = "https://localhost:3000";
 
 const shortenLinkController = async (req, res) => {
-  const { longUrl } = req.body;
+  try {
+    const { longUrl } = req.body;
+    if (!longUrl) {
+      return res.json({
+        urlSuccess: false,
+        error: "Long URL is required",
+      });
+    }
 
-  if (!longUrl) {
-    return res.status(400).json({ error: "Long URL is required" });
+    const user = await User.findOne({ Email: "test1@test.com" });
+    const usage = await Usage.findOne({ UserID: user._id });
+    const plan = await Plan.findOne({ _id: user.PlanID });
+
+    if (usage.URLCount >= plan.URLLimit) {
+      return res.json({
+        urlSuccess: false,
+        message: "URL limit exceeded. Please upgrade your subscription plan",
+      });
+    }
+    const shortId = nanoid();
+    if (user && usage && plan) {
+      const newUrl = await URL.create({
+        UserID: user._id,
+        shortUrl: shortId,
+        OriginalUrl: longUrl,
+      });
+      if (newUrl) {
+        user.Urls.push(newUrl._id);
+        usage.URLCount += 1;
+        await user.save();
+        await usage.save();
+        return res.json({
+          urlSuccess: true,
+          shortUrl: `${publicDomain}/${shortId}`,
+          shortId: shortId,
+          message: "Short url genrated successfully",
+        });
+      }
+    } else {
+      return res.json({
+        urlSuccess: false,
+        message: "Failed to generate Short URL",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      qrSuccess: false,
+      message: "Internel server error",
+    });
   }
-
-  const shortId = nanoid();
-  urlDatabase[shortId] = longUrl;
-
-  const shortUrl = `${publicDomain}/${shortId}`;
-
-  res.json({ shortUrl });
 };
 
 module.exports = shortenLinkController;

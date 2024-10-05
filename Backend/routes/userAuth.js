@@ -2,10 +2,12 @@ const express = require("express");
 const loginController = require("../controllers/loginController");
 const registerController = require("../controllers/registerController");
 const { Plan } = require("../models");
+const logoutController = require("../controllers/logoutController");
 const router = express.Router();
 
 router.post("/register", registerController);
 router.post("/login", loginController);
+router.get("/logoutMe", logoutController);
 
 router.get("/cp", async (req, res) => {
   const plan1 = await Plan.create({
