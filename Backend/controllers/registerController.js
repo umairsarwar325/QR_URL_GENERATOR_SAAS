@@ -1,5 +1,8 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/usersModel");
+const Plan = require("../models/planModel");
+const Subscription = require("../models/subscriptionModel");
+const Usage = require("../models/usageModel");
 
 const registerController = async function (req, res, next) {
   try {
@@ -7,7 +10,6 @@ const registerController = async function (req, res, next) {
 
     // Check if user already exists
     const existingUser = await User.findOne({ Email });
-    console.log(existingUser);
     if (existingUser) {
       return res.json({
         authSuccess: false,
@@ -27,12 +29,35 @@ const registerController = async function (req, res, next) {
     });
 
     if (newUser) {
-      return res.status(201).json({
-        authSuccess: true,
-        message: "User registered successfully. Login to continue",
-      });
+      const intialPlan = await Plan.findOne({ PlanName: "BASIC" });
+      if (intialPlan) {
+        const intialSubscription = await Subscription.create({
+          UserID: newUser._id,
+          PlanID: intialPlan._id,
+          Status: "active",
+        });
+        const intialUsage = await Usage.create({
+          UserID: newUser._id,
+          SubscriptionID: intialSubscription._id,
+          QRCodeCount: 0,
+          URLCount: 0,
+        });
+        newUser.PlanID = intialPlan._id;
+        await newUser.save();
+        if (intialSubscription && intialUsage) {
+          return res.json({
+            authSuccess: true,
+            message: "User registered successfully. Login to continue",
+          });
+        } else {
+          return res.json({
+            authSuccess: false,
+            message: "Can not register, try again",
+          });
+        }
+      }
     } else {
-      return res.status(201).json({
+      return res.json({
         authSuccess: false,
         message: "Can not register, try again",
       });

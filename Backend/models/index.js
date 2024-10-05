@@ -1,4 +1,4 @@
-const User = require('./userModel');
+const User = require('./usersModel');
 const QRCode = require('./qrCodeModel');
 const URL = require('./urlModel');
 const Payment = require('./paymentModel');
