@@ -24,7 +24,6 @@ const Login = () => {
         "http://localhost:3000/api/login",
         data
       );
-      console.log(data);
       if (response.data.authSuccess) {
         setLoading(false);
         navigate("/home");

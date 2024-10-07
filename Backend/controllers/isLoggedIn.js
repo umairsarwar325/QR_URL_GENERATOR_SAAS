@@ -1,33 +1,25 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/usersModel");
 const keys = require("../config/keys");
+const { Token } = require("../models");
 
 const isLoggedIn = async (req, res, next) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.status(401).json({
-      authSuccess: false,
-      message: "No token, authorization denied",
-    });
-  }
-
   try {
-    const decoded = jwt.verify(token, keys.JWT_KEY);
-    const userFromDb = await User.findOne({ _id: decoded.user._id });
-    if (userFromDb) {
-      req.user = decoded.user;
+    const token = await Token.findOne({ Name: "AUTH_TOKEN" });
+    const user = await User.findOne({ _id: token.UserId });
+    if (token && user) {
+      req.user = user;
       next();
     } else {
-      return res.status(401).json({
-        authSuccess: false,
-        message: "Token is not valid",
+      return res.json({
+        authFailure: true,
+        message: "You are not logged in. Log in to continue",
       });
     }
   } catch (err) {
-    res.status(401).json({
-      authSuccess: false,
-      message: "Token is not valid",
+    res.json({
+      authFailure: true,
+      message: "Internel server error",
     });
   }
 };

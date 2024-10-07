@@ -30,7 +30,7 @@ const qrController = async function (req, res, next) {
         message: "Text is required",
       });
     }
-    const user = await User.findOne({ Email: "test1@test.com" });
+    const user = await User.findOne({ _id: req.user._id });
     const usage = await Usage.findOne({ UserID: user._id });
     const plan = await Plan.findOne({ _id: user.PlanID });
 
@@ -80,7 +80,6 @@ const qrController = async function (req, res, next) {
         "base64"
       );
       const imageSrc = `data:${contentType};base64,${imageBase64}`;
-
       if (user && usage && plan) {
         const newQr = await QRCode.create({
           UserID: user._id,
@@ -105,7 +104,7 @@ const qrController = async function (req, res, next) {
       }
     }
   } catch (error) {
-    res.status(500).json({
+    res.json({
       qrSuccess: false,
       message: "Internel server error",
     });

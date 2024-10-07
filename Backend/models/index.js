@@ -1,9 +1,9 @@
 const User = require('./usersModel');
 const QRCode = require('./qrCodeModel');
 const URL = require('./urlModel');
-const Payment = require('./paymentModel');
 const Subscription = require('./subscriptionModel');
 const Plan = require('./planModel');
 const Usage = require('./usageModel');
+const Token = require('./tokenModel');
 
-module.exports = { User, QRCode, URL, Payment, Subscription, Plan, Usage };
+module.exports = { User, QRCode, URL,  Subscription, Plan, Usage,Token };

@@ -20,7 +20,7 @@ const QRCodeDisplay = () => {
     <div className="border p-6 rounded-lg bg-white shadow">
       <h2 className="text-xl font-bold mb-4">Generated QR Code</h2>
       <img
-        src={qrCodeImageSrc && qrCodeImageSrc.imageSrc}
+        src={qrCodeImageSrc}
         className="w-32 h-32 mx-auto mb-6"
         alt="QR Code"
       />

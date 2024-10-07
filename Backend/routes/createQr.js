@@ -3,6 +3,6 @@ const qrController = require("../controllers/createQrController");
 const isLoggedIn = require("../controllers/isLoggedIn");
 const router = express.Router();
 
-router.post("/create", isLoggedIn, qrController);
+router.post("/",isLoggedIn, qrController);
 
 module.exports = router;

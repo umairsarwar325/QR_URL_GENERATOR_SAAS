@@ -22,16 +22,20 @@ import SettingsPage from "./routes/SettingsPage.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HeroSection />,
+    element: (
+      <Qr_Code_Generator_Store_Provider>
+        <HeroSection />,
+      </Qr_Code_Generator_Store_Provider>
+    ),
   },
   {
     path: "/pricing",
-    element: <Pricing />,
+    element: (
+      <Qr_Code_Generator_Store_Provider>
+        <Pricing />,
+      </Qr_Code_Generator_Store_Provider>
+    ),
   },
-  // {
-  //   path: "/logout",
-  //   element: <div>logout page</div>,
-  // },
   {
     path: "/login",
     element: (
@@ -73,16 +77,16 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: <SettingsPage/>,
+        element: <SettingsPage />,
       },
       {
         path: "help",
-        element: <HelpAndSupport/>,
+        element: <HelpAndSupport />,
       },
-        {
-      path: "logout",
-      element: <Logout />,
-    },
+      {
+        path: "logout",
+        element: <Logout />,
+      },
     ],
   },
 ]);

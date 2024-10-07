@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/usersModel");
-const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
+const { Token } = require("../models");
 
 const loginController = async function (req, res, next) {
   try {
@@ -24,25 +23,19 @@ const loginController = async function (req, res, next) {
       });
     }
 
-    // Generate JWT
-    const payload = {
-      user: {
-        _id: user._id,
-        Email: user.Email,
-      },
-    };
+    const newToken = await Token.findOneAndUpdate(
+      { Name: "AUTH_TOKEN" },
+      { $set: { Email: user.Email, UserId: user._id } },
+      { new: true }
+    );
 
-    const token = jwt.sign(payload, keys.JWT_KEY);
-
-    // Set the token as a cookie
-    res.cookie("token", token);
-
-    res.json({
-      authSuccess: true,
-      message: "Login successful",
-    });
+    if (newToken) {
+      res.json({
+        authSuccess: true,
+        message: "Login successful",
+      });
+    }
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       authSuccess: false,
       message: "Internal server error",

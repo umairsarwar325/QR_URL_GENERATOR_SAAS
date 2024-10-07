@@ -4,6 +4,7 @@ import Button from "../Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { QrCodeContext } from "../../store/Qr_Code_Generator_Store";
+import ErrorModal from "../../routes/login&signup_pages/ErrorModal";
 
 const QRForm = () => {
   const {
@@ -12,6 +13,8 @@ const QRForm = () => {
     setFormData,
     showCustomization,
     longUrlS,
+    setShowErrorModal,
+    showErrorModal,
   } = useContext(QrCodeContext);
 
   const [showCaption, setShowCaption] = useState(false);
@@ -38,10 +41,25 @@ const QRForm = () => {
         "http://localhost:3000/api/qr-code",
         formData
       ); // Make request with formData
-      if (response) {
-        getqrCodeImageSrc(response.data); // Fetch the QR code image URL
+      if (response.data.authFailure) {
+        setShowErrorModal({
+          status: true,
+          type: "error",
+          message: response.data.message,
+        });
+        setLoading(false);
+        navigate("/login");
+      }
+      if (response.data.qrSuccess) {
+        console.log(response.data);
+        getqrCodeImageSrc(response.data.imageSrc); // Fetch the QR code image URL
         setLoading(false);
       } else {
+        setShowErrorModal({
+          status: true,
+          type: "error",
+          message: response.data.message,
+        });
         setLoading(false);
       }
     } catch (error) {
@@ -52,7 +70,7 @@ const QRForm = () => {
 
   // Handle cancel action
   const handleCancel = () => {
-    navigate("/home"); // Redirect to the homepage or another screen
+    navigate("/home");
   };
 
   const handleCheckboxChange = () => {
@@ -471,6 +489,7 @@ const QRForm = () => {
           </div>
         </div>
       )}
+      {showErrorModal.status && <ErrorModal />}
     </form>
   );
 };

@@ -23,7 +23,7 @@ const shortenLinkController = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ Email: "test1@test.com" });
+    const user = await User.findOne({ _id: req.user._id });
     const usage = await Usage.findOne({ UserID: user._id });
     const plan = await Plan.findOne({ _id: user.PlanID });
 
@@ -59,7 +59,7 @@ const shortenLinkController = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.json({
       qrSuccess: false,
       message: "Internel server error",
     });

@@ -30,9 +30,11 @@ const SignUp = () => {
           message: response.data.message,
         });
         if (response.data.authSuccess) {
+          setLoading(false);
           navigate("/login");
+        } else {
+          setLoading(false);
         }
-        setLoading(false);
       } else {
         setShowErrorModal({
           status: true,

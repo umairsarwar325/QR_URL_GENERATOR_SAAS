@@ -27,7 +27,6 @@ const registerController = async function (req, res, next) {
       Email,
       PasswordHash,
     });
-
     if (newUser) {
       const intialPlan = await Plan.findOne({ PlanName: "BASIC" });
       if (intialPlan) {

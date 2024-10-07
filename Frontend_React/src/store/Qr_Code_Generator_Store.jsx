@@ -27,14 +27,24 @@ export const QrCodeContext = createContext({
     type: "error",
     message: "",
   },
-  setShowErrorModal: () => {}, // Add this line
-  setFormData: () => {}, // Add this line
-  setShowCustomization: () => {}, // Add this line
-  setLongUrlS: () => {}, // Add this line
+  token: "",
+  setToken: () => {},
+  setShowErrorModal: () => {},
+  setFormData: () => {},
+  setShowCustomization: () => {},
+  setLongUrlS: () => {},
 });
 
 const Qr_Code_Generator_Store_Provider = ({ children }) => {
   const [qrCodeImageSrc, setQrCodeImageSrc] = useState(null);
+  const [showCustomization, setShowCustomization] = useState(false);
+  const [longUrlS, setLongUrlS] = useState(null);
+  const [token, setToken] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState({
+    status: false,
+    type: "error",
+    message: "",
+  });
   const [formData, setFormData] = useState({
     text: "",
     format: "png",
@@ -51,16 +61,10 @@ const Qr_Code_Generator_Store_Provider = ({ children }) => {
     centerImageWidth: "50",
     centerImageHeight: "50",
   });
+
   const getqrCodeImageSrc = (qrCodeSrc) => {
     setQrCodeImageSrc(qrCodeSrc);
   };
-  const [showCustomization, setShowCustomization] = useState(false);
-  const [longUrlS, setLongUrlS] = useState(null);
-  const [showErrorModal, setShowErrorModal] = useState({
-    status: false,
-    type: "error",
-    message: "",
-  });
 
   // Handle QR code download
   const handleDownloadClick = () => {
@@ -84,6 +88,8 @@ const Qr_Code_Generator_Store_Provider = ({ children }) => {
         setLongUrlS,
         showErrorModal,
         setShowErrorModal,
+        token,
+        setToken,
       }}
     >
       {children}

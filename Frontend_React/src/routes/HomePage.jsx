@@ -1,11 +1,15 @@
 // /src/pages/HomePage.jsx
-import React from 'react';
-import BoxContainer from '../components/BoxContainer';
+import React, { useContext } from "react";
+import BoxContainer from "../components/BoxContainer";
+import { QrCodeContext } from "../store/Qr_Code_Generator_Store";
 
 const HomePage = () => {
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Welcome to Your Link Management Hub</h1>
+      <h1 className="text-2xl font-bold mb-6">
+        Welcome to Your Link Management Hub
+      </h1>
 
       <div className="grid grid-cols-2 gap-6">
         <BoxContainer title="Short your URL">
@@ -33,7 +37,9 @@ const HomePage = () => {
         </BoxContainer>
 
         <BoxContainer title="Replace Bitly with your brand">
-          <p>Replace "bit.ly" with your brand. Click it, scan it, or share it.</p>
+          <p>
+            Replace "bit.ly" with your brand. Click it, scan it, or share it.
+          </p>
           <button className="bg-orange-500 text-white px-4 py-2 rounded">
             Replace Now
           </button>

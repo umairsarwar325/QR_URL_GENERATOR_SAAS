@@ -5,7 +5,7 @@ const longUrlController = async (req, res) => {
 
   const urlFromDb = await URL.findOne({ shortUrl: shortId });
   if (urlFromDb) {
-    res.send(urlFromDb.OriginalUrl);
+    res.redirect(urlFromDb.OriginalUrl);
   } else {
     res.json({ error: "URL not found" });
   }

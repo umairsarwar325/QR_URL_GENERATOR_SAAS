@@ -1,13 +1,11 @@
 const express = require("express");
 const loginController = require("../controllers/loginController");
 const registerController = require("../controllers/registerController");
-const { Plan } = require("../models");
-const logoutController = require("../controllers/logoutController");
+const { Plan, Token } = require("../models");
 const router = express.Router();
 
 router.post("/register", registerController);
 router.post("/login", loginController);
-router.get("/logoutMe", logoutController);
 
 router.get("/cp", async (req, res) => {
   const plan1 = await Plan.create({
@@ -35,6 +33,14 @@ router.get("/cp", async (req, res) => {
     URLLimit: 1500,
   });
   res.send("created 4 plans");
+});
+router.get("/ct", async (req, res) => {
+  const plan1 = await Token.create({
+    Name: "AUTH_TOKEN",
+    Email: "",
+    UserId: null,
+  });
+  res.send("created 1 token");
 });
 
 module.exports = router;
